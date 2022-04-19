@@ -1,6 +1,7 @@
 # Trading Exchange
 This is an example for Trading Exchange = Order Book + Matching Engine app.
-This application writted with php language.
+
+This application written by php language.
 
 ## What is the algorithm?
 ```
