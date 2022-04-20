@@ -1,20 +1,18 @@
 # Trading Exchange
 This is an example for Trading Exchange = Order Book + Matching Engine app.
-This application writted with php language.
+
+This application written by php language.
 
 ## What is the algorithm?
 ```
 while True
   foreach symbol => symbols
-    canTransaction = true
-    symbolToBuy  = symbol.symbol_1
-    symbolToSell = symbol.symbol_2
+    symbolToBuy  = symbol.symbol_to_buy
+    symbolToSell = symbol.symbol_to_sell
     while canTransaction == true
       maxBuyOrder = search order in database maximum price for wanted to buy symbol
       minSellOrder = search order in database minimum pricate for wanted to sell symbol
       if maxBuyOrder < minSellOrder
-        canTransaction = false
-      if canTransaction = false 
         exit()
       
       quantity = min( maxBuyOrder.quantity , minSellOrder.quantity )
@@ -51,19 +49,27 @@ while True
 
 ### symbol_pair
 
-| id | symbol_1 | symbol_2 | name        |
-|----|----------|----------|-------------|
-| 1  |    1     |    2     |   BTC/USD   |
+| id | symbol_to_buy | symbol_to_sell | name        |
+|----|---------------|----------------|-------------|
+| 1  |    1          |    2           |   BTC/USD   |
 
 ### order_book
 
 
-| id | symbol_pair | quantity | price | buy_sell | user_id | date |
-|----|-------------|----------|-------|----------|---------|------|
-| 1  | 1           | 10       | 10    |   -1     |  1      | CD   |
-| 2  | 1           | 20       | 12    |    1     |  2      | CD   |
+| id | user_id | symbol_pair | price | quantity | buy_sell | date |
+|----|---------|-------------|-------|----------|----------|------|
+| 1  |    1    | 1           | 10    | 10       |   -1     |  CD  |
+| 2  |    2    | 1           | 20    | 12       |    1     |  CD  |
 
 
 ### transaction_history
+| id | user_id | symbol_pair_id | price | quantity | buy_sell | date |
+|----|---------|----------------|-------|----------|----------|------|
+| 1  |    8    |        1       | 20.00 | 10.00000 |    -1    |  CD  |
 
-> Editing
+
+### inventory (wallet)
+| user_id | symbol | quantity |
+|---------|--------|----------|
+|    1    |   1    |   82     |
+   

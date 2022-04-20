@@ -89,54 +89,60 @@ class DB{
 
   public function sql($sql,$parameters=[]){
     $stmt = $this->db->prepare($sql);
-    $stmt->bind_param("".str_repeat("s", count($parameters)), ...$parameters);
+    
+    // If parameters is array
+    if(is_array($parameters) && count($parameters) > 0){
+      $stmt->bind_param("".str_repeat("s", count($parameters)), ...$parameters);
+    }
+
     $stmt->execute();
-    $result = $stmt->get_result();
-    $rows = [];
-    while($row = $result->fetch_assoc()){
-      $rows[] = $row;
+    
+    // If Select Statement
+    if(strpos(strtolower($sql), "select") !== false){
+      $result = $stmt->get_result();
+      $rows = [];
+      while($row = $result->fetch_assoc()){
+        $rows[] = $row;
+      }
+      // TODO :: CHECK for PROBLEMS
+      // Check if no result
+      if(count($rows) == 0){
+        return false;
+      }
+      // Check if only one result and all values are empty
+      $isAllEmpty = true;
+      foreach($rows[0] as $key => $value){
+        if($value != ""){
+          $isAllEmpty = false;
+        }
+      }
+      if($isAllEmpty){
+        return false;
+      }
+      return $rows;  
+    }
+
+    // Update or Delete Statement
+    if(strpos(strtolower($sql), "update") !== false || strpos(strtolower($sql), "delete") !== false){
+      return $stmt->affected_rows;
     }
     $stmt->close();
-    // TODO :: CHECK for PROBLEMS
-    // Check if no result
-    if(count($rows) == 0){
-      return false;
-    }
-    // Check if only one result and all values are empty
-    $isAllEmpty = true;
-    foreach($rows[0] as $key => $value){
-      if($value != ""){
-        $isAllEmpty = false;
-      }
-    }
-    if($isAllEmpty){
-      return false;
-    }
-    return $rows;
+
   }
 
-  
-  public function update($table, $where, $data){
-    $_query = "UPDATE $table SET ";
-    $_where_values = $this->where($where);
-    $_where = $_where_values[0];
-    $_values = $_where_values[1];
 
-    $_isFirst = true;
-    foreach($data as $key => $value){
-      if($_isFirst){
-        $_isFirst = false;
-      }else{
-        $_query .= ", ";
-      }
-      $_query .= "$key = ?";
-      $_values[] = $value;
+  public function set($table,$parameters){
+    $keys = [];
+    $values = [];
+    $equals = [];
+    foreach($parameters as $key => $value){
+      $keys[] = $key;
+      $values[] = $value;
+      $equals[] = " $key='". addslashes($value) ."' ";
     }
-    $_query .= " WHERE $_where";
-    $stmt = $this->db->prepare($_query);
-    $stmt->bind_param("".str_repeat("s", count($_values)), ...$_values);
-    $stmt->execute();
-    $stmt->close();
+    $equalsSql = "".implode(",", $equals)."";
+    $query = "INSERT INTO $table SET " . $equalsSql . " ON DUPLICATE KEY UPDATE " . $equalsSql;
+    $this->sql($query);
   }
 
   
