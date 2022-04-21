@@ -95,6 +95,9 @@ while(1){
         "buy_sell" => 1
       ));
 
+      // Update Last Symbol Price
+      $db->sql("UPDATE `symbol_pair` SET `symbol_pair_last_price`=? WHERE `id`=?",[ $price, $symbol_pair_id ]);
+
       // Remove all empty quantityies
       $db->sql("DELETE FROM `order_book` WHERE quantity=0");
 

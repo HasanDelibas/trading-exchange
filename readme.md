@@ -32,8 +32,16 @@ while True
       // Add To Transaction History
       transactionHistory.add( user, quantity , price , "buy" , date )
 
+      // Update Last Price
+      symbol.symbol_pair_last_price = price
+
       // Remove all empty quantityies
       DB::Delete( {quantity:0} )
+
+      // Save All Changes
+      DB::Commit()
+
+
 
 ```
 
@@ -49,9 +57,9 @@ while True
 
 ### symbol_pair
 
-| id | symbol_to_buy | symbol_to_sell | name        |
-|----|---------------|----------------|-------------|
-| 1  |    1          |    2           |   BTC/USD   |
+| id | symbol_to_buy | symbol_to_sell | symbol_pair_last_price        |
+|----|---------------|----------------|-------------------------------|
+| 1  |    1          |    2           |    20                         |
 
 ### order_book
 
@@ -73,4 +81,3 @@ while True
 |---------|--------|----------|
 |    1    |   1    |   82     |
    
-> Editing

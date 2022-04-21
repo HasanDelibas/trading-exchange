@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Anamakine: localhost
--- Üretim Zamanı: 20 Nis 2022, 23:53:10
+-- Üretim Zamanı: 21 Nis 2022, 21:39:52
 -- Sunucu sürümü: 10.4.17-MariaDB
 -- PHP Sürümü: 8.0.0
 
@@ -39,7 +39,9 @@ CREATE TABLE `inventory` (
 
 INSERT INTO `inventory` (`user_id`, `symbol`, `quantity`) VALUES
 (2, 1, 82.00000),
-(8, 2, 1840.00000);
+(4, 2, 168.00000),
+(8, 2, 1840.00000),
+(9, 2, 42.00000);
 
 -- --------------------------------------------------------
 
@@ -63,7 +65,7 @@ CREATE TABLE `order_book` (
 
 INSERT INTO `order_book` (`id`, `user_id`, `symbol_pair`, `price`, `quantity`, `buy_sell`, `date`) VALUES
 (11, 1, 1, 19.00, 10.00000, 1, '2022-04-20 23:19:41'),
-(12, 2, 1, 21.00, 18.00000, 1, '2022-04-20 23:20:34');
+(12, 2, 1, 21.00, 8.00000, 1, '2022-04-20 23:20:34');
 
 -- --------------------------------------------------------
 
@@ -93,15 +95,16 @@ INSERT INTO `symbol` (`id`, `name`) VALUES
 CREATE TABLE `symbol_pair` (
   `id` int(11) NOT NULL,
   `symbol_to_buy` int(11) NOT NULL,
-  `symbol_to_sell` int(11) NOT NULL
+  `symbol_to_sell` int(11) NOT NULL,
+  `symbol_pair_last_price` float(10,2) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 
 --
 -- Tablo döküm verisi `symbol_pair`
 --
 
-INSERT INTO `symbol_pair` (`id`, `symbol_to_buy`, `symbol_to_sell`) VALUES
-(1, 1, 2);
+INSERT INTO `symbol_pair` (`id`, `symbol_to_buy`, `symbol_to_sell`, `symbol_pair_last_price`) VALUES
+(1, 1, 2, 20.00);
 
 -- --------------------------------------------------------
 
@@ -126,7 +129,11 @@ CREATE TABLE `transaction_history` (
 INSERT INTO `transaction_history` (`id`, `user_id`, `symbol_pair_id`, `price`, `quantity`, `buy_sell`, `date`) VALUES
 (2, 8, 0, 20.00, 10.00000, -1, '2022-04-20 23:15:40'),
 (3, 8, 0, 20.00, 82.00000, -1, '2022-04-20 23:20:34'),
-(4, 2, 0, 20.00, 82.00000, 1, '2022-04-20 23:20:34');
+(4, 2, 0, 20.00, 82.00000, 1, '2022-04-20 23:20:34'),
+(5, 4, 1, 20.00, 8.00000, -1, '2022-04-21 21:20:28'),
+(6, 2, 1, 20.00, 8.00000, 1, '2022-04-21 21:20:28'),
+(9, 9, 1, 20.00, 2.00000, -1, '2022-04-21 22:39:07'),
+(10, 2, 1, 20.00, 2.00000, 1, '2022-04-21 22:39:07');
 
 --
 -- Dökümü yapılmış tablolar için indeksler
@@ -171,7 +178,7 @@ ALTER TABLE `transaction_history`
 -- Tablo için AUTO_INCREMENT değeri `order_book`
 --
 ALTER TABLE `order_book`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=15;
 
 --
 -- Tablo için AUTO_INCREMENT değeri `symbol`
@@ -189,7 +196,7 @@ ALTER TABLE `symbol_pair`
 -- Tablo için AUTO_INCREMENT değeri `transaction_history`
 --
 ALTER TABLE `transaction_history`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
 
 --
 -- Dökümü yapılmış tablolar için kısıtlamalar

@@ -107,6 +107,7 @@ class DB{
       // TODO :: CHECK for PROBLEMS
       // Check if no result
       if(count($rows) == 0){
+        $stmt->close();
         return false;
       }
       // Check if only one result and all values are empty
@@ -117,17 +118,20 @@ class DB{
         }
       }
       if($isAllEmpty){
+        $stmt->close();
         return false;
       }
+      $stmt->close();
       return $rows;  
     }
 
     // Update or Delete Statement
     if(strpos(strtolower($sql), "update") !== false || strpos(strtolower($sql), "delete") !== false){
-      return $stmt->affected_rows;
+      $row_counts = $stmt->affected_rows;
+      $stmt->close();
+      return $row_counts;
     }
     $stmt->close();
-
   }
 
 
@@ -142,7 +146,7 @@ class DB{
     }
     $equalsSql = "".implode(",", $equals)."";
     $query = "INSERT INTO $table SET " . $equalsSql . " ON DUPLICATE KEY UPDATE " . $equalsSql;
-    $this->sql($query);
+    return $this->sql($query);
   }
 
   public function autocommit(){
