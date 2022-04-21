@@ -34,8 +34,10 @@ while(1){
 
       $quantity = min( $maxBuyOrder["quantity"] , $minSellOrder["quantity"] );
       $price = $minSellOrder["price"];
-
       
+      $db->autocommit(FALSE);
+
+      /// SELL STATE
       // Add Symbol to user wallet
       $sellerInventory = $db->get("inventory", array(
         "user_id" => $minSellOrder["user_id"],
@@ -64,6 +66,7 @@ while(1){
         "buy_sell" => -1
       ));
 
+      /// BUY STATE
       // Buy symbol from order
       $buyerInventory = $db->get("inventory", array(
         "user_id" => $maxBuyOrder["user_id"],
@@ -94,6 +97,10 @@ while(1){
 
       // Remove all empty quantityies
       $db->sql("DELETE FROM `order_book` WHERE quantity=0");
+
+      // Save All Changes
+      $db->commit();
+      $db->autocommit(TRUE);
 
       // ADD TO LOG
       print_r([

@@ -145,6 +145,16 @@ class DB{
     $this->sql($query);
   }
 
+  public function autocommit(){
+    $this->db->autocommit(FALSE);
+  }
   
+  public function commit(){
+    $this->db->commit();
+  }
+
+  public function rollback(){
+    $this->db->rollback();
+  }
 
 }
